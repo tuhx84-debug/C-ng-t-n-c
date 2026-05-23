@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Công Tơ Nước"/>
+<meta name="theme-color" content="#1a56a0"/>
+<title>Công Tơ Nước</title>
+<style>
+:root{
+  --b:#1a56a0;--b2:#2e7bd4;--b3:#e8f4ff;
+  --g:#1e7e4a;--gl:#d4f0e2;
+  --r:#c0392b;--rl:#fde8e7;
+  --am:#b45309;--al:#fef3cd;
+  --card:#fff;--bg:#f0f4fa;--tx:#1a2333;--mu:#6b7a99;--br:#dce5f5;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;
+  -webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+input,textarea,select{-webkit-user-select:text;user-select:text}
+html,body{height:100%;overflow:hidden}
+body{font-family:-apple-system,'Segoe UI',sans-serif;background:var(--bg);
+  color:var(--tx);display:flex;flex-direction:column;max-width:100vw}
+
+/* TOPBAR */
+.top{background:linear-gradient(135deg,#0d2d5a,var(--b) 55%,var(--b2));
+  padding:env(safe-area-inset-top,12px) 16px 12px;padding-top:calc(env(safe-area-inset-top,0px) + 12px);
+  display:flex;align-items:center;gap:10px;flex-shrink:0;
+  box-shadow:0 2px 12px rgba(13,45,90,.4)}
+.top-logo{width:38px;height:38px;background:rgba(255,255,255,.18);border-radius:10px;
+  display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.top-title{color:#fff;font-size:15px;font-weight:800}
+.top-sub{color:rgba(255,255,255,.72);font-size:11px;margin-top:1px}
+.top-sp{flex:1}
+.top-date{color:rgba(255,255,255,.85);font-size:11px;font-weight:600;text-align:right}
+
+/* TABBAR */
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);background:#fff;
+  border-bottom:2px solid var(--br);flex-shrink:0;
+  box-shadow:0 1px 6px rgba(0,0,0,.07)}
+.tab{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:8px 2px;gap:2px;border:none;background:none;cursor:pointer;
+  font-size:9px;font-weight:700;color:var(--mu);text-transform:uppercase;
+  letter-spacing:.4px;position:relative;-webkit-appearance:none;font-family:inherit}
+.tab .ic{font-size:19px;line-height:1}
+.tab.on{color:var(--b)}
+.tab.on::after{content:'';position:absolute;bottom:-2px;left:15%;right:15%;
+  height:3px;border-radius:3px 3px 0 0;background:var(--b)}
+
+/* PAGES */
+.pages{flex:1;overflow:hidden;position:relative}
+.pg{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;display:none;padding-bottom:env(safe-area-inset-bottom,16px)}
+.pg.on{display:block}
+
+/* ─── PAGE 0: NHẬP LIỆU ─── */
+.card{margin:12px 12px 0;background:var(--card);border-radius:14px;
+  padding:13px;box-shadow:0 2px 8px rgba(0,0,0,.07);border:1px solid var(--br)}
+.card h2{font-size:13px;color:var(--b);font-weight:700;margin-bottom:10px}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.fl label{display:block;font-size:10px;color:var(--mu);font-weight:700;
+  text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.fl input,.fl select{width:100%;border:1.5px solid var(--br);border-radius:10px;
+  padding:10px 12px;font-size:15px;color:var(--tx);background:#fff;
+  outline:none;-webkit-appearance:none;font-family:inherit}
+.fl input:focus,.fl select:focus{border-color:var(--b2)}
+
+.sec{font-size:11px;font-weight:700;color:var(--b);text-transform:uppercase;
+  letter-spacing:.6px;padding:0 12px;margin:14px 0 8px;
+  display:flex;align-items:center;gap:7px}
+.sec::after{content:'';flex:1;height:1px;background:var(--br)}
+
+.pw{padding:0 12px;margin-bottom:8px}
+.pt{font-size:11px;color:var(--mu);margin-bottom:3px;
+  display:flex;justify-content:space-between}
+.pbb{height:6px;background:var(--br);border-radius:99px;overflow:hidden}
+.pbf{height:100%;background:linear-gradient(90deg,var(--b2),var(--g));
+  border-radius:99px;transition:width .4s;width:0}
+
+.mg{padding:0 12px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mc{background:var(--card);border-radius:12px;border:1.5px solid var(--br);
+  padding:10px;position:relative;transition:border .15s,box-shadow .15s}
+.mc.ok{border-color:var(--b2);box-shadow:0 0 0 2px rgba(46,123,212,.1)}
+.mc .cl{font-size:9px;font-weight:700;color:var(--mu);text-transform:uppercase;
+  letter-spacing:.4px;margin-bottom:6px;display:flex;justify-content:space-between}
+.mc .cn{font-size:11px;font-weight:800;color:var(--b);
+  background:var(--b3);border-radius:5px;padding:1px 5px}
+.mc input{width:100%;border:1.5px solid var(--br);border-radius:8px;
+  padding:9px 8px;font-size:19px;font-weight:700;color:var(--tx);
+  background:#fafcff;outline:none;text-align:center;-webkit-appearance:none;font-family:inherit}
+.mc input:focus{border-color:var(--b2);background:#fff}
+.mc .df{margin-top:5px;font-size:11px;text-align:center;font-weight:600;
+  min-height:14px;color:var(--g)}
+.mc .df.neg{color:var(--r)}.mc .df.no{color:var(--mu)}
+.ck{position:absolute;top:6px;right:6px;width:16px;height:16px;
+  background:var(--g);border-radius:50%;display:none;
+  align-items:center;justify-content:center}
+.ck svg{width:8px;height:8px}
+.mc.ok .ck{display:flex}
+
+.nw{padding:0 12px;margin-bottom:6px}
+.nw textarea{width:100%;border:1.5px solid var(--br);border-radius:10px;
+  padding:10px 12px;font-size:14px;color:var(--tx);background:#fff;
+  outline:none;resize:none;height:64px;font-family:inherit}
+.nw textarea:focus{border-color:var(--b2)}
+
+.sw{padding:12px}
+.bsub{width:100%;background:linear-gradient(135deg,var(--b),var(--b2));
+  color:#fff;border:none;border-radius:13px;padding:15px;
+  font-size:15px;font-weight:700;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  box-shadow:0 4px 14px rgba(30,86,160,.3);font-family:inherit}
+.bsub:active{opacity:.85;transform:scale(.98)}
+.bsub:disabled{opacity:.5}
+
+/* ─── PAGE 1: BẢNG ─── */
+.tc{padding:10px 12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  background:#fff;border-bottom:1px solid var(--br);flex-shrink:0}
+.tc label{font-size:11px;font-weight:700;color:var(--mu)}
+.cs{border:1.5px solid var(--br);border-radius:8px;padding:7px 10px;
+  font-size:13px;color:var(--tx);background:#fff;outline:none;-webkit-appearance:none;font-family:inherit}
+.bex{background:var(--g);color:#fff;border:none;border-radius:8px;
+  padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;
+  margin-left:auto;font-family:inherit}
+
+.tw{overflow-x:auto;overflow-y:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:11px;min-width:800px}
+thead{position:sticky;top:0;z-index:10}
+.hm{background:#0d2d5a;color:#fff;padding:8px 5px;font-weight:700;
+  text-align:center;white-space:nowrap;font-size:10px}
+.hs{background:#1565c0;color:#fff;padding:5px 4px;font-size:9px;font-weight:700;text-align:center}
+.hd{background:#1b5e20;color:#fff;padding:5px 4px;font-size:9px;font-weight:700;text-align:center}
+td{padding:6px 5px;border-bottom:1px solid #edf2fc;text-align:center;
+  white-space:nowrap;border-right:1px solid #edf2fc}
+.tda{text-align:left;font-weight:700;color:var(--b);padding-left:10px;
+  min-width:80px;background:#fff;position:sticky;left:0;z-index:5;
+  border-right:2px solid var(--br)}
+.tdm{color:var(--tx);font-weight:500}
+.tdd{color:var(--g);font-size:10px;font-weight:700}
+.tdd.neg{color:var(--r)}.tdd.em{color:#bbb}
+.tdn{text-align:left;color:var(--mu);font-size:10px;min-width:80px}
+tr:nth-child(even){background:#fafcff}
+.tot td{background:#0d2d5a!important;color:#fff!important;font-weight:700!important}
+.tot .tda{background:#0d2d5a!important;color:#fff!important}
+.tod{background:#fff9e6!important}
+.tod .tda{background:#fff9e6!important;color:var(--am)!important}
+
+/* ─── PAGE 2: DASHBOARD ─── */
+.dp{padding:12px}
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px}
+.sc{background:var(--card);border-radius:13px;padding:13px;
+  border:1px solid var(--br);box-shadow:0 1px 5px rgba(0,0,0,.06)}
+.sc .sl{font-size:9px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.5px;color:var(--mu);margin-bottom:5px}
+.sc .sv{font-size:24px;font-weight:800;color:var(--b);line-height:1}
+.sc .ss{font-size:10px;color:var(--mu);margin-top:3px}
+.sc.gn .sv{color:var(--g)}.sc.rd .sv{color:var(--r)}.sc.am .sv{color:var(--am)}
+
+.ds{background:var(--card);border-radius:13px;border:1px solid var(--br);
+  box-shadow:0 1px 5px rgba(0,0,0,.06);margin-bottom:10px;overflow:hidden}
+.dsh{padding:11px 14px;border-bottom:1px solid var(--br);
+  font-size:12px;font-weight:700;color:var(--b)}
+
+.msl{padding:8px 10px;display:flex;flex-direction:column;gap:5px}
+.mr{display:flex;align-items:center;gap:8px;padding:7px 9px;
+  border-radius:9px;border:1px solid var(--br);background:#fafcff}
+.mr.ok{border-color:#9dd6b6;background:#f0fcf6}
+.mr.wn{border-color:#f5b9b5;background:#fff5f5}
+.mb{width:28px;height:28px;border-radius:7px;font-weight:800;font-size:11px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  background:var(--b3);color:var(--b)}
+.mr.ok .mb{background:var(--gl);color:var(--g)}
+.mr.wn .mb{background:var(--rl);color:var(--r)}
+.mi{flex:1;min-width:0}
+.mn{font-size:11px;font-weight:700}
+.mv{font-size:10px;color:var(--mu)}
+.mdb{font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px;
+  background:var(--gl);color:var(--g);flex-shrink:0}
+.mdb.neg{background:var(--rl);color:var(--r)}
+.mdb.no{background:var(--br);color:var(--mu)}
+
+.cw{padding:10px 14px}
+.cbr{display:flex;align-items:center;gap:7px;margin-bottom:4px}
+.cbl{font-size:10px;font-weight:600;color:var(--mu);width:18px;text-align:right;flex-shrink:0}
+.cbb{flex:1;height:9px;background:var(--br);border-radius:99px;overflow:hidden}
+.cbf{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--b2),var(--g));transition:width .5s}
+.cbv{font-size:10px;font-weight:700;color:var(--b);width:42px;flex-shrink:0}
+
+.empty{text-align:center;padding:24px 16px;color:var(--mu);font-size:12px}
+.empty .ei{font-size:32px;margin-bottom:6px}
+
+/* TOAST */
+.toast{position:fixed;bottom:calc(env(safe-area-inset-bottom,0px) + 20px);left:50%;
+  transform:translateX(-50%) translateY(80px);background:var(--g);color:#fff;
+  padding:12px 20px;border-radius:12px;font-size:13px;font-weight:600;
+  box-shadow:0 4px 18px rgba(0,0,0,.22);z-index:9999;
+  transition:transform .35s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;max-width:90vw}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.err{background:var(--r)}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="top-logo">💧</div>
+  <div>
+    <div class="top-title">Công Tơ Nước</div>
+    <div class="top-sub" id="tSub">25 công tơ • Theo dõi hàng ngày</div>
+  </div>
+  <div class="top-sp"></div>
+  <div class="top-date" id="tDate"></div>
+</div>
+
+<div class="tabs">
+  <button class="tab on" onclick="go(0)" id="t0"><span class="ic">📝</span>Nhập liệu</button>
+  <button class="tab" onclick="go(1)" id="t1"><span class="ic">📋</span>Bảng theo dõi</button>
+  <button class="tab" onclick="go(2)" id="t2"><span class="ic">📊</span>Dashboard</button>
+</div>
+
+<div class="pages">
+
+<!-- PAGE 0 -->
+<div class="pg on" id="p0">
+  <div class="card">
+    <h2>📋 Thông tin nhập liệu</h2>
+    <div class="r2">
+      <div class="fl"><label>Ngày</label>
+        <input type="date" id="iDate" onchange="onDC()"/></div>
+      <div class="fl"><label>Công nhân</label>
+        <select id="iWork">
+          <option>Công nhân 1</option><option>Công nhân 2</option>
+          <option>Công nhân 3</option><option>Công nhân 4</option>
+          <option>Quản lý</option>
+        </select></div>
+    </div>
+  </div>
+
+  <div class="sec">Chỉ số công tơ (m³)</div>
+  <div class="pw">
+    <div class="pt"><span id="pTxt">Đã nhập: 0 / 25</span><span id="pPct">0%</span></div>
+    <div class="pbb"><div class="pbf" id="pBar"></div></div>
+  </div>
+  <div class="mg" id="mGrid"></div>
+
+  <div class="sec">Ghi chú</div>
+  <div class="nw"><textarea id="iNote" placeholder="Ghi sự cố, bất thường..."></textarea></div>
+
+  <div class="sw">
+    <button class="bsub" id="bSub" onclick="save()">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z"/></svg>
+      Lưu & Cập nhật hệ thống
+    </button>
+  </div>
+</div>
+
+<!-- PAGE 1 -->
+<div class="pg" id="p1">
+  <div class="tc">
+    <label>Tháng:</label>
+    <select class="cs" id="sM" onchange="renderT()">
+      <option value="1">T1</option><option value="2">T2</option>
+      <option value="3">T3</option><option value="4">T4</option>
+      <option value="5">T5</option><option value="6">T6</option>
+      <option value="7">T7</option><option value="8">T8</option>
+      <option value="9">T9</option><option value="10">T10</option>
+      <option value="11">T11</option><option value="12">T12</option>
+    </select>
+    <label>Năm:</label>
+    <select class="cs" id="sY" onchange="renderT()">
+      <option>2025</option><option>2026</option>
+    </select>
+    <button class="bex" onclick="expCSV()">📥 Xuất</button>
+  </div>
+  <div class="tw" id="tWrap">
+    <table>
+      <thead><tr id="tH1"></tr><tr id="tH2"></tr></thead>
+      <tbody id="tBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- PAGE 2 -->
+<div class="pg" id="p2">
+  <div class="dp">
+    <div class="sg">
+      <div class="sc"><div class="sl">Tổng tiêu thụ</div><div class="sv" id="dT">—</div><div class="ss">m³ tháng này</div></div>
+      <div class="sc gn"><div class="sl">Nhập hôm nay</div><div class="sv" id="dTd">—</div><div class="ss">/ 25 công tơ</div></div>
+      <div class="sc am"><div class="sl">Ngày có data</div><div class="sv" id="dD">—</div><div class="ss">ngày trong tháng</div></div>
+      <div class="sc rd"><div class="sl">Bất thường</div><div class="sv" id="dW">—</div><div class="ss">giá trị giảm</div></div>
+    </div>
+    <div class="ds"><div class="dsh">🔢 Trạng thái công tơ (mới nhất)</div>
+      <div class="msl" id="mSL"><div class="empty"><div class="ei">📭</div>Chưa có dữ liệu</div></div>
+    </div>
+    <div class="ds"><div class="dsh">📈 Tiêu thụ theo ngày (m³)</div>
+      <div class="cw" id="dChart"><div class="empty"><div class="ei">📈</div>Chưa có dữ liệu</div></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /pages -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+const N=25,SK='ct_v3';
+let store={};
+try{store=JSON.parse(localStorage.getItem(SK))||{};}catch(e){}
+function sv(){localStorage.setItem(SK,JSON.stringify(store));}
+
+// ── TABS ──
+function go(i){
+  document.querySelectorAll('.tab').forEach((b,j)=>b.classList.toggle('on',j===i));
+  document.querySelectorAll('.pg').forEach((p,j)=>p.classList.toggle('on',j===i));
+  if(i===1)renderT();
+  if(i===2)renderD();
+}
+
+// ── TOPBAR ──
+function upTop(){
+  const n=new Date();
+  document.getElementById('tDate').textContent=
+    n.toLocaleDateString('vi-VN',{day:'2-digit',month:'2-digit',year:'numeric'});
+  document.getElementById('tSub').textContent=
+    `25 công tơ · ${Object.keys(store).length} ngày đã nhập`;
+}
+
+// ── PAGE 0 ──
+function initDate(){
+  const n=new Date();
+  document.getElementById('iDate').value=
+    `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;
+}
+
+function buildGrid(){
+  const g=document.getElementById('mGrid');g.innerHTML='';
+  for(let i=1;i<=N;i++){
+    g.innerHTML+=`<div class="mc" id="mc${i}">
+      <div class="cl">Công tơ <span class="cn">#${i}</span></div>
+      <input type="number" inputmode="decimal" step="0.01" id="m${i}" placeholder="0.00" oninput="onM(${i})"/>
+      <div class="df no" id="d${i}">—</div>
+      <div class="ck"><svg viewBox="0 0 10 10" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M1.5 5l2.5 2.5 4.5-5"/></svg></div>
+    </div>`;
+  }
+}
+
+function prevDate(s){const d=new Date(s+'T00:00:00');d.setDate(d.getDate()-1);return d.toISOString().slice(0,10);}
+function prevVal(i){
+  const pd=prevDate(document.getElementById('iDate').value);
+  const e=store[pd];if(!e)return null;
+  const v=e.m[i-1];return(v!==null&&v!==undefined&&!isNaN(v))?parseFloat(v):null;
+}
+
+function onM(i){
+  const inp=document.getElementById(`m${i}`),card=document.getElementById(`mc${i}`),dEl=document.getElementById(`d${i}`);
+  const v=inp.value.trim(),num=parseFloat(v),ok=v!==''&&!isNaN(num);
+  card.classList.toggle('ok',ok);
+  if(ok){
+    const pv=prevVal(i);
+    if(pv!==null){const df=num-pv;dEl.textContent=(df>=0?'+':'')+df.toFixed(2)+' m³';dEl.className='df'+(df<0?' neg':'');}
+    else{dEl.textContent=num.toFixed(2)+' m³';dEl.className='df no';}
+  }else{dEl.textContent='—';dEl.className='df no';}
+  upProg();
+}
+
+function upProg(){
+  let c=0;for(let i=1;i<=N;i++){const v=document.getElementById(`m${i}`).value;if(v!==''&&!isNaN(parseFloat(v)))c++;}
+  const p=Math.round(c/N*100);
+  document.getElementById('pBar').style.width=p+'%';
+  document.getElementById('pTxt').textContent=`Đã nhập: ${c} / ${N}`;
+  document.getElementById('pPct').textContent=p+'%';
+}
+
+function onDC(){
+  const dt=document.getElementById('iDate').value,e=store[dt];
+  for(let i=1;i<=N;i++){
+    document.getElementById(`m${i}`).value=e?(e.m[i-1]!==null?e.m[i-1]:''):'';
+    onM(i);
+  }
+  document.getElementById('iNote').value=e?e.note||'':'';
+  upProg();
+}
+
+function save(){
+  const dt=document.getElementById('iDate').value,wk=document.getElementById('iWork').value,nt=document.getElementById('iNote').value.trim();
+  if(!dt){toast('⚠️ Chưa chọn ngày!',true);return;}
+  const m=[];for(let i=1;i<=N;i++){const v=document.getElementById(`m${i}`).value;m.push(v!==''&&!isNaN(parseFloat(v))?parseFloat(v):null);}
+  if(!m.some(v=>v!==null)){toast('⚠️ Chưa nhập số liệu!',true);return;}
+  store[dt]={m,note:nt,w:wk,ts:Date.now()};sv();upTop();
+  toast('✅ Đã lưu! Bảng & Dashboard đã cập nhật.');
+  ['t1','t2'].forEach(id=>{const el=document.getElementById(id);el.style.background='#e8f4ff';setTimeout(()=>el.style.background='',700);});
+}
+
+// ── PAGE 1: TABLE ──
+function buildTHead(){
+  const h1=document.getElementById('tH1'),h2=document.getElementById('tH2');
+  h1.innerHTML=h2.innerHTML='';
+  const td=document.createElement('th');td.textContent='Ngày';td.rowSpan=2;td.className='hm';
+  td.style.cssText='text-align:left;padding-left:10px;position:sticky;left:0;z-index:20;min-width:78px';h1.appendChild(td);
+  for(let i=1;i<=N;i++){
+    const th=document.createElement('th');th.colSpan=2;th.textContent=`CT ${i}`;th.className='hm';h1.appendChild(th);
+    const s1=document.createElement('th');s1.textContent='m³';s1.className='hs';h2.appendChild(s1);
+    const s2=document.createElement('th');s2.textContent='↑/ngày';s2.className='hd';h2.appendChild(s2);
+  }
+  const tn=document.createElement('th');tn.textContent='Ghi chú';tn.rowSpan=2;tn.className='hm';
+  tn.style.cssText='text-align:left;padding-left:6px;min-width:80px';h1.appendChild(tn);
+}
+
+function renderT(){
+  const mo=parseInt(document.getElementById('sM').value),yr=parseInt(document.getElementById('sY').value);
+  const days=new Date(yr,mo,0).getDate(),tod=new Date().toISOString().slice(0,10);
+  const mm=String(mo).padStart(2,'0'),tb=document.getElementById('tBody');tb.innerHTML='';
+  const dTotals=new Array(N).fill(0),lVals=new Array(N).fill(null);
+  let gDiff=0,prevE=null;
+  const d0=new Date(`${yr}-${mm}-01T00:00:00`);d0.setDate(d0.getDate()-1);
+  prevE=store[d0.toISOString().slice(0,10)]||null;
+  for(let day=1;day<=days;day++){
+    const dd=String(day).padStart(2,'0'),key=`${yr}-${mm}-${dd}`,e=store[key]||null,isT=key===tod;
+    const tr=document.createElement('tr');if(isT)tr.className='tod';
+    const tda=document.createElement('td');tda.className='tda';
+    tda.textContent=`${dd}/${mm}`+(isT?' ★':'');tr.appendChild(tda);
+    for(let i=0;i<N;i++){
+      const val=e?e.m[i]:null,prev=prevE?prevE.m[i]:null;
+      const diff=(val!==null&&prev!==null)?(val-prev):null;
+      const tv=document.createElement('td');tv.className='tdm';tv.textContent=val!==null?val.toFixed(2):'—';tr.appendChild(tv);
+      const td2=document.createElement('td');
+      if(diff!==null){td2.textContent=(diff>=0?'+':'')+diff.toFixed(2);td2.className='tdd'+(diff<0?' neg':'');dTotals[i]+=diff;gDiff+=diff;}
+      else{td2.textContent='—';td2.className='tdd em';}
+      tr.appendChild(td2);
+      if(val!==null)lVals[i]=val;
+    }
+    const tn=document.createElement('td');tn.className='tdn';tn.textContent=e&&e.note?e.note:'';tr.appendChild(tn);
+    tb.appendChild(tr);if(e)prevE=e;
+  }
+  const tot=document.createElement('tr');tot.className='tot';
+  const tda=document.createElement('td');tda.className='tda';tda.textContent='TỔNG';tot.appendChild(tda);
+  for(let i=0;i<N;i++){
+    const tv=document.createElement('td');tv.textContent=lVals[i]!==null?lVals[i].toFixed(2):'—';tot.appendChild(tv);
+    const td2=document.createElement('td');td2.textContent=dTotals[i]?dTotals[i].toFixed(2):'—';tot.appendChild(td2);
+  }
+  const tn=document.createElement('td');tn.textContent=gDiff.toFixed(2)+' m³';tot.appendChild(tn);
+  tb.appendChild(tot);
+}
+
+// ── PAGE 2: DASHBOARD ──
+function renderD(){
+  const n=new Date(),yr=n.getFullYear(),mo=n.getMonth()+1,tod=n.toISOString().slice(0,10);
+  const mm=String(mo).padStart(2,'0'),days=new Date(yr,mo,0).getDate();
+  let gDiff=0,warns=0,dWD=0,todF=0;
+  const daily=[],lM=new Array(N).fill(null),pM=new Array(N).fill(null);
+  let prevE=null;
+  const d0=new Date(`${yr}-${mm}-01T00:00:00`);d0.setDate(d0.getDate()-1);
+  prevE=store[d0.toISOString().slice(0,10)]||null;
+  for(let day=1;day<=days;day++){
+    const dd=String(day).padStart(2,'0'),key=`${yr}-${mm}-${dd}`,e=store[key];
+    if(!e)continue;dWD++;
+    let dt=0;
+    for(let i=0;i<N;i++){
+      const val=e.m[i],prev=prevE?prevE.m[i]:null;
+      if(val!==null)lM[i]=val;if(prev!==null)pM[i]=prev;
+      if(val!==null&&prev!==null){const df=val-prev;dt+=Math.max(0,df);gDiff+=df;if(df<0)warns++;}
+      if(key===tod&&val!==null)todF++;
+    }
+    daily.push({day,total:dt});prevE=e;
+  }
+  document.getElementById('dT').textContent=gDiff>0?gDiff.toFixed(1):'0';
+  document.getElementById('dTd').textContent=todF;
+  document.getElementById('dD').textContent=dWD;
+  document.getElementById('dW').textContent=warns;
+  const sl=document.getElementById('mSL');sl.innerHTML='';
+  if(lM.every(v=>v===null)){sl.innerHTML='<div class="empty"><div class="ei">📭</div>Chưa có dữ liệu</div>';}
+  else{for(let i=0;i<N;i++){
+    const val=lM[i],prev=pM[i],diff=(val!==null&&prev!==null)?(val-prev):null;
+    const div=document.createElement('div');
+    div.className='mr'+(val!==null?(diff!==null&&diff<0?' wn':' ok'):'');
+    div.innerHTML=`<div class="mb">${i+1}</div>
+      <div class="mi"><div class="mn">Công tơ ${i+1}</div>
+      <div class="mv">${val!==null?val.toFixed(2)+' m³':'Chưa nhập'}</div></div>
+      <div class="mdb ${diff===null?'no':diff<0?'neg':''}">${diff!==null?(diff>=0?'+':'')+diff.toFixed(2):'—'}</div>`;
+    sl.appendChild(div);
+  }}
+  const cw=document.getElementById('dChart');cw.innerHTML='';
+  if(!daily.length){cw.innerHTML='<div class="empty"><div class="ei">📈</div>Chưa có dữ liệu</div>';}
+  else{const mx=Math.max(...daily.map(d=>d.total),0.01);
+    daily.forEach(({day,total})=>{
+      const pct=(total/mx*100).toFixed(1),row=document.createElement('div');
+      row.className='cbr';
+      row.innerHTML=`<div class="cbl">${day}</div>
+        <div class="cbb"><div class="cbf" style="width:${pct}%"></div></div>
+        <div class="cbv">${total.toFixed(1)}</div>`;
+      cw.appendChild(row);
+    });
+  }
+}
+
+// ── EXPORT ──
+function expCSV(){
+  const mo=parseInt(document.getElementById('sM').value),yr=parseInt(document.getElementById('sY').value);
+  const days=new Date(yr,mo,0).getDate(),mm=String(mo).padStart(2,'0');
+  let c='Ngay';for(let i=1;i<=N;i++)c+=`,CT${i}_m3,CT${i}_ngay`;c+=',Ghi_chu\n';
+  let prevE=null;
+  for(let day=1;day<=days;day++){
+    const dd=String(day).padStart(2,'0'),key=`${yr}-${mm}-${dd}`,e=store[key]||null;
+    c+=`${dd}/${mm}/${yr}`;
+    for(let i=0;i<N;i++){
+      const val=e?e.m[i]:null,prev=prevE?prevE.m[i]:null,diff=(val!==null&&prev!==null)?(val-prev):null;
+      c+=`,${val!==null?val.toFixed(2):''}`;c+=`,${diff!==null?diff.toFixed(2):''}`;
+    }
+    c+=`,${e&&e.note?e.note.replace(/,/g,' '):''}\n`;if(e)prevE=e;
+  }
+  const blob=new Blob(['\uFEFF'+c],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download=`CongTo_T${mo}_${yr}.csv`;a.click();URL.revokeObjectURL(url);
+  toast('✅ Đã xuất file CSV!');
+}
+
+// ── TOAST ──
+function toast(msg,err=false){
+  const t=document.getElementById('toast');t.textContent=msg;
+  t.className='toast'+(err?' err':'');
+  requestAnimationFrame(()=>t.classList.add('show'));
+  setTimeout(()=>t.classList.remove('show'),3200);
+}
+
+// ── INIT ──
+(function(){
+  const n=new Date();
+  document.getElementById('sM').value=n.getMonth()+1;
+  document.getElementById('sY').value=n.getFullYear();
+  initDate();buildGrid();buildTHead();onDC();upTop();
+})();
+</script>
+</body>
+</html>
